@@ -1,5 +1,6 @@
 'use server';
-
+import { signIn } from '@/auth';
+import { AuthError } from 'next-auth'
 import {z} from 'zod';
 import { revalidatePath } from 'next/cache';
 import {redirect} from 'next/navigation';
@@ -104,4 +105,21 @@ export async function deleteInvoice(id: string) {
   await sql`DELETE FROM invoices WHERE id = ${id}`;
   revalidatePath('/dashboard/invoices');
 
+}
+
+export async function authenticate(prevState:string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+        default:
+          return 'something went wrong';
+      }
+    }
+    throw error;
+  }
 }
