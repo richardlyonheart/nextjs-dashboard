@@ -1,5 +1,5 @@
 'use server';
-import { signIn } from '@/auth';
+import { signIn } from '@/app/auth'; 
 import { AuthError } from 'next-auth';
 import {z} from 'zod';
 import { revalidatePath } from 'next/cache';
@@ -8,7 +8,8 @@ import postgres from 'postgres';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require'});
 
-export async function authenticate(prevState: string | undefined,
+  export async function authenticate(
+  prevState: string | undefined,
   formData: FormData,
 ) {
   try {
@@ -23,7 +24,7 @@ export async function authenticate(prevState: string | undefined,
     }
     throw error;
   }
-}
+} 
 
 const FormSchema = z.object({
     id: z.string(),
